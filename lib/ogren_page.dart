@@ -17,20 +17,20 @@ class _OgrenPageState extends State<OgrenPage> with Ses{
     return Scaffold(
       appBar: AppBar(
         title: const Text('Öğren'),
-        actions: [
-          Slider(
-            label: 'Hız',
-            max: .9,
-            min: .1,
-            value: value,
-            onChanged: (val) {
-              volumeSpeed(val);
-              setState(() {
-                value = val;
-              });
-            },
-          ),
-        ],
+        // actions: [
+        //   Slider(
+        //     label: 'Hız',
+        //     max: .9,
+        //     min: .1,
+        //     value: value,
+        //     onChanged: (val) {
+        //       volumeSpeed(val);
+        //       setState(() {
+        //         value = val;
+        //       });
+        //     },
+        //   ),
+        // ],
       ),
       body: Center(
         child: ListView.builder(

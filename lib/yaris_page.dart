@@ -38,20 +38,20 @@ class _YarisPageState extends State<YarisPage>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Yarış Sayfası'),
-        actions: [
-          Slider(
-            label: 'Hız',
-            max: .9,
-            min: .1,
-            value: value,
-            onChanged: (val) {
-              volumeSpeed(val);
-              setState(() {
-                value = val;
-              });
-            },
-          ),
-        ],
+        // actions: [
+        //   Slider(
+        //     label: 'Hız',
+        //     max: .9,
+        //     min: .1,
+        //     value: value,
+        //     onChanged: (val) {
+        //       volumeSpeed(val);
+        //       setState(() {
+        //         value = val;
+        //       });
+        //     },
+        //   ),
+        // ],
       ),
       body: Center(
         child: Column(
