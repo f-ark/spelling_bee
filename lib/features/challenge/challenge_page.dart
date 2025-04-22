@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'voice_mixin.dart';
+import 'package:spelling_bee/core/widgets/voice_mixin.dart';
 
 class ChallengePage extends StatefulWidget {
   const ChallengePage({super.key});
@@ -39,13 +39,13 @@ class _ChallengePageState extends State<ChallengePage>
 
   @override
   Widget build(BuildContext context) {
-    const String title = 'Yarışma';
+    const  title = 'Yarışma';
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
@@ -82,9 +82,9 @@ class _ChallengePageState extends State<ChallengePage>
               style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     shadows: [
                       const Shadow(
-                        blurRadius: 16.0,
+                        blurRadius: 16,
                         color: Colors.black26,
-                        offset: Offset(5.0, 5.0),
+                        offset: Offset(5, 5),
                       ),
                     ],
                   ),

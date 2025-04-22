@@ -1,84 +1,90 @@
 import 'package:flutter/material.dart';
-import 'package:spelling_bee/yaris_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spelling_bee/core/app_start/app_start_provider.dart';
+import 'package:spelling_bee/core/costants/costants.dart';
+import 'package:spelling_bee/core/widgets/main_menu_elevated_button.dart';
+import 'package:spelling_bee/features/challenge/challenge_page.dart';
+import 'package:spelling_bee/features/learn/learning_page.dart';
 
-import 'ogren_page.dart';
-
-void main() => runApp(MyApp());
+void main() {
+  runApp(const ProviderScope(child: MyApp()));
+}
 
 class MyApp extends StatelessWidget {
-  static const title = 'Spelling Bee';
-
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: title, home: AnaSayfa(title: title),
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData( colorSchemeSeed: Colors.indigoAccent,)
-
-
+    return MaterialApp(
+      title: AppConstants.appName,
+      home: MainPage(title: AppConstants.appName),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(colorSchemeSeed: Colors.indigo),
     );
   }
 }
 
-class AnaSayfa extends StatelessWidget {
-  const AnaSayfa({super.key, required this.title});
+class MainPage extends ConsumerWidget {
+  MainPage({required this.title, super.key});
 
   final String title;
+  final LinearGradient gradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Colors.blue.shade200, Colors.blue.shade900],
+  );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appStartup = ref.watch(appStartupProvider);
+
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.indigo.shade700,
+        elevation: 5,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
+      ),
 
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Spacer(),
-              Expanded(
-                child: ElevatedButton(
+      body: Container(
+        decoration: BoxDecoration(gradient: gradient),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            child: appStartup.when(
+              data:
+                  (data) => const Column(
+                    children: [
+                      MainMenuElevatedButon(
+                        title: 'Tüm Liste',
+                        color: Colors.blue,
+                        page: OgrenPage(),
+                        icon: Icons.list,
+                      ),
 
-                  style: ButtonStyle(
+                      SizedBox(height: 10),
 
-                    backgroundColor: WidgetStatePropertyAll(Colors.blue),
+                      MainMenuElevatedButon(
+                        title: 'Yarış',
+                        color: Colors.green,
+                        page: ChallengePage(),
+                        icon: Icons.access_time_rounded,
+                      ),
+                    ],
                   ),
-
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => OgrenPage()),
-                    );
-                  },
-
-                  child: Text(
-                    'Öğren',
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                ),
-              ),
-              Spacer(),
-              Expanded(
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Colors.amber),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => YarisPage()),
-                    );
-                  },
-                  child: Text(
-                    'Yarış',
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                ),
-              ),
-              Spacer(),
-            ],
+              error: (error, stackTrace) => Text(error.toString()),
+              loading: CircularProgressIndicator.new,
+            ),
           ),
         ),
       ),

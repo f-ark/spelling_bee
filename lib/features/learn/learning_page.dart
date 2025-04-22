@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spelling_bee/word_list.dart';
-import 'package:spelling_bee/shared_service.dart';
-
-import 'voice_mixin.dart';
+import 'package:spelling_bee/core/app_start/shared_service.dart';
+import 'package:spelling_bee/core/costants/word_list.dart';
+import 'package:spelling_bee/core/widgets/voice_mixin.dart';
 
 class OgrenPage extends StatefulWidget {
   const OgrenPage({super.key});
@@ -15,14 +14,14 @@ class OgrenPage extends StatefulWidget {
 class _OgrenPageState extends State<OgrenPage> with VoiceMixin {
   @override
   Widget build(BuildContext context) {
-    String title = 'Öğren';
+    const  title = 'Öğren';
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
 
-        title: Text(
+        title: const Text(
           title,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.indigo.shade700,
         elevation: 5,

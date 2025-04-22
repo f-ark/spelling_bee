@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-import 'package:spelling_bee/word_list.dart';
+import 'package:spelling_bee/core/costants/word_list.dart';
 
 mixin VoiceMixin<T extends StatefulWidget> on State<T> {
   final flutterTts = FlutterTts();
@@ -43,7 +43,7 @@ mixin VoiceMixin<T extends StatefulWidget> on State<T> {
     if (text.isNotEmpty) {
       for (final char in text.split('')) {
         await flutterTts.speak(char);
-        await Future.delayed(
+        await Future<void>.delayed(
           const Duration(milliseconds: 600),
         ); // Her harf arasında 500ms bekle
       }
