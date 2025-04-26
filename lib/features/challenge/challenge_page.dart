@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:spelling_bee/core/widgets/voice_mixin.dart';
+import 'package:spelling_bee/core/widgets/voice_slider_control_widget.dart';
 
+/// Öğrenilen ingilizce kelimeleri random olarak telaffuz eder,
+/// bekleme süresinde kullanıcı tahmininin doğruluğunu sınar.
 class ChallengePage extends StatefulWidget {
   const ChallengePage({super.key});
 
@@ -12,12 +15,21 @@ class ChallengePage extends StatefulWidget {
 class _ChallengePageState extends State<ChallengePage>
     with VoiceMixin, SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late TextEditingController _textController;
 
-  String kelime = '';
+  String cachedWord = '';
 
-  Future<void> rastgeleKelimeUret() async {
-    kelime = await randomWord();
+  Future<void> randomWordGenerate() async {
+    cachedWord = await randomWord();
+  }
+
+  void nextEventButton() {
+    setState(() {});
+    if (_controller.isCompleted) {
+      _controller.reverse();
+    } else {
+      randomWordGenerate();
+      _controller.forward();
+    }
   }
 
   @override
@@ -27,50 +39,22 @@ class _ChallengePageState extends State<ChallengePage>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _textController = TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _textController.dispose();
     _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    const  title = 'Yarışma';
+    const title = 'Yarışma';
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: const Text(
-          title,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.indigo.shade700,
-        elevation: 5,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20),
-          ),
-        ),
-        actions: [
-          Slider(
-            label: 'Hız',
-            max: .9,
-            min: .1,
-            value: value,
-            onChanged: (val) {
-              volumeSpeed(val);
-              setState(() {
-                value = val;
-              });
-            },
-          ),
-        ],
+        title: const Text(title),
+
+        actions: const [VoiceSliderControlWidget()],
       ),
       body: Center(
         child: Column(
@@ -78,39 +62,29 @@ class _ChallengePageState extends State<ChallengePage>
           children: [
             Text(
               textAlign: TextAlign.center,
-              _controller.isForwardOrCompleted ? '' : kelime,
+              _controller.isForwardOrCompleted ? '' : cachedWord,
               style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    shadows: [
-                      const Shadow(
-                        blurRadius: 16,
-                        color: Colors.black26,
-                        offset: Offset(5, 5),
-                      ),
-                    ],
+                shadows: [
+                  const Shadow(
+                    blurRadius: 16,
+                    color: Colors.black26,
+                    offset: Offset(5, 5),
                   ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                setState(() {});
-                if (_controller.isCompleted) {
-                  _controller.reverse();
-                } else {
-                  rastgeleKelimeUret();
-                  _controller.forward();
-                }
-              },
+              onPressed: nextEventButton,
               child: AnimatedIcon(
                 icon: AnimatedIcons.play_pause,
                 progress: _controller,
                 size: 100,
               ),
             ),
-
           ],
         ),
       ),
     );
   }
-
 }

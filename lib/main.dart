@@ -1,25 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:spelling_bee/core/app_start/app_start_provider.dart';
 import 'package:spelling_bee/core/costants/costants.dart';
+import 'package:spelling_bee/core/route/app_route_information_parser.dart';
+import 'package:spelling_bee/core/route/app_router_delegate.dart';
+import 'package:spelling_bee/core/route/main_page_model.dart';
 import 'package:spelling_bee/core/widgets/main_menu_elevated_button.dart';
-import 'package:spelling_bee/features/challenge/challenge_page.dart';
-import 'package:spelling_bee/features/learn/learning_page.dart';
+
 
 void main() {
-  runApp(const ProviderScope(child: MyApp()));
+  usePathUrlStrategy();
+  runApp(ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends ConsumerWidget {
+  MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appRouterDelegate = AppRouterDelegate(ref: ref);
+    final appRouteInformationParser = AppRouteInformationParser();
+
+    return MaterialApp.router(
       title: AppConstants.appName,
-      home: MainPage(title: AppConstants.appName),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.indigo),
+      routerDelegate: appRouterDelegate,
+      routeInformationParser: appRouteInformationParser,
+      theme: ThemeData(
+        colorSchemeSeed: Colors.indigo,
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.indigo,
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -28,63 +51,44 @@ class MainPage extends ConsumerWidget {
   MainPage({required this.title, super.key});
 
   final String title;
-  final LinearGradient gradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [Colors.blue.shade200, Colors.blue.shade900],
-  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appStartup = ref.watch(appStartupProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.indigo.shade700,
-        elevation: 5,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-        ),
-      ),
+      appBar: AppBar(title: Text(title)),
 
-      body: Container(
-        decoration: BoxDecoration(gradient: gradient),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: appStartup.when(
-              data:
-                  (data) => const Column(
-                    children: [
-                      MainMenuElevatedButon(
-                        title: 'Tüm Liste',
-                        color: Colors.blue,
-                        page: OgrenPage(),
-                        icon: Icons.list,
-                      ),
-
-                      SizedBox(height: 10),
-
-                      MainMenuElevatedButon(
-                        title: 'Yarış',
-                        color: Colors.green,
-                        page: ChallengePage(),
-                        icon: Icons.access_time_rounded,
-                      ),
-                    ],
-                  ),
-              error: (error, stackTrace) => Text(error.toString()),
-              loading: CircularProgressIndicator.new,
-            ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: appStartup.when(
+            data:
+                (data) => Column(
+                  children: [
+                    MainMenuElevatedButon(
+                      title: 'Tüm Liste',
+                      color: Colors.blue,
+                      onPressed:
+                          () => ref
+                              .read(mainPageModelProvider)
+                              .changePage(MainPageType.learn),
+                      icon: Icons.list,
+                    ),
+                    const SizedBox(height: 10),
+                    MainMenuElevatedButon(
+                      onPressed:
+                          () => ref
+                              .read(mainPageModelProvider)
+                              .changePage(MainPageType.challenge),
+                      title: 'Yarış',
+                      color: Colors.green,
+                      icon: Icons.access_time_rounded,
+                    ),
+                  ],
+                ),
+            error: (error, stackTrace) => Text(error.toString()),
+            loading: CircularProgressIndicator.new,
           ),
         ),
       ),

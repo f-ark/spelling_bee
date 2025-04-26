@@ -1,56 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spelling_bee/core/app_start/shared_service.dart';
+import 'package:spelling_bee/core/services/shared_service.dart';
 import 'package:spelling_bee/core/costants/word_list.dart';
 import 'package:spelling_bee/core/widgets/voice_mixin.dart';
+import 'package:spelling_bee/core/widgets/voice_slider_control_widget.dart';
 
-class OgrenPage extends StatefulWidget {
-  const OgrenPage({super.key});
+/// Local cache desteği ile kelime listesi ve telafuzlarını barındıran sayfa
+class LearningPage extends StatefulWidget {
+  const LearningPage({super.key});
 
   @override
-  State<OgrenPage> createState() => _OgrenPageState();
+  State<LearningPage> createState() => _LearningPageState();
 }
 
-class _OgrenPageState extends State<OgrenPage> with VoiceMixin {
+class _LearningPageState extends State<LearningPage> with VoiceMixin {
   @override
   Widget build(BuildContext context) {
-    const  title = 'Öğren';
+    const title = 'Öğren';
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.white,
+        title: const Text(title),
 
-        title: const Text(
-          title,
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.indigo.shade700,
-        elevation: 5,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-        ),
-
-        actions: [
-          Slider(
-            label: 'Hız',
-            max: .9,
-            min: .1,
-            value: value,
-            onChanged: (val) {
-              volumeSpeed(val);
-              setState(() {
-                value = val;
-              });
-            },
-          ),
-        ],
+        actions: const [VoiceSliderControlWidget()],
       ),
       body: Center(
         child: ListView.builder(
-
           itemCount: WordList.words.length,
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
-key: ValueKey(index),
+              key: ValueKey(index),
               onTap: () {
                 // Kelimeye tıklandığında telaffuz et
                 speak(WordList.words.keys.elementAt(index));
@@ -84,11 +62,11 @@ class RedGreenChangerWidget extends ConsumerStatefulWidget {
 }
 
 class _DragableWidgetState extends ConsumerState<RedGreenChangerWidget> {
-  late final List<String> swipedItems;
+  late final List<String> cacheItems;
 
   @override
   void initState() {
-    swipedItems = ref.read(sharedPreferencesServiceProvider).getList();
+    cacheItems = ref.read(sharedPreferencesServiceProvider).getList();
     super.initState();
   }
 
@@ -98,27 +76,26 @@ class _DragableWidgetState extends ConsumerState<RedGreenChangerWidget> {
       child: ListTile(
         leading: InkWell(
           onTap: () {
+            if (cacheItems.contains(widget.index.toString())) {
+              setState(() {
+                cacheItems.remove(widget.index.toString());
+              });
+              ref
+                  .read(sharedPreferencesServiceProvider)
+                  .removeItem(widget.index.toString());
+            } else {
+              setState(() {
+                cacheItems.add(widget.index.toString());
+              });
 
-           if( swipedItems.contains(widget.index.toString()))
-                {  setState(() {
-                  swipedItems.remove(widget.index.toString());
-                });
-                  ref
-                .read(sharedPreferencesServiceProvider)
-                .removeItem(widget.index.toString());}
-                else {
-             setState(() {
-               swipedItems.add(widget.index.toString());
-             });
-
-             ref
-                 .read(sharedPreferencesServiceProvider)
-                 .addItem(widget.index.toString());
-           }
+              ref
+                  .read(sharedPreferencesServiceProvider)
+                  .addItem(widget.index.toString());
+            }
           },
           child: CircleAvatar(
             backgroundColor:
-                swipedItems.contains(widget.index.toString())
+                cacheItems.contains(widget.index.toString())
                     ? Colors.red
                     : Colors.green,
             child: Text(
@@ -137,7 +114,7 @@ class _DragableWidgetState extends ConsumerState<RedGreenChangerWidget> {
         ),
         trailing: IconButton(
           onPressed: widget.onPressed,
-          icon: const Icon(Icons.volume_up),
+          icon: const Icon(Icons.abc_outlined),
         ),
       ),
     );

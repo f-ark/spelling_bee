@@ -3,9 +3,10 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 import 'package:spelling_bee/core/costants/word_list.dart';
 
+/// [FlutterTts] paketi ile State nesnelerine tefaffuz özelliği kazandıran mixin
 mixin VoiceMixin<T extends StatefulWidget> on State<T> {
   final flutterTts = FlutterTts();
-  double value = 0.4;
+  double voiceSpeedValue = 0.4;
 
   @override
   void initState() {
@@ -24,7 +25,7 @@ mixin VoiceMixin<T extends StatefulWidget> on State<T> {
 
     // İsteğe bağlı: Ses seviyesini ayarlayın (0.0 - 1.0 arası)
     await flutterTts.setVolume(1);
-    await volumeSpeed(value);
+    await volumeSpeed(voiceSpeedValue);
   }
 
   // Ses hızını ayarlayan fonksiyon

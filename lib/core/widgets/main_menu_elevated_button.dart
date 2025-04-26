@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 
 class MainMenuElevatedButon extends StatelessWidget {
   const MainMenuElevatedButon({
+    required this. onPressed,
     required this.title,
     required this.color,
-    required this.page,
     required this.icon,
     super.key,
   });
 
   final IconData icon;
-  final Widget page;
   final String title;
   final MaterialColor color;
+
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +32,7 @@ class MainMenuElevatedButon extends StatelessWidget {
         padding: const WidgetStatePropertyAll(EdgeInsets.all(8)),
       ),
 
-      onPressed: () {
-        Navigator.push<void>(
-          context,
-          MaterialPageRoute(builder: (context) => page),
-        );
-      },
+      onPressed: onPressed,
 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
