@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:spelling_bee/core/route/main_page_model.dart';
 import 'package:spelling_bee/core/widgets/voice_mixin.dart';
 import 'package:spelling_bee/core/widgets/voice_slider_control_widget.dart';
 
 /// Öğrenilen ingilizce kelimeleri random olarak telaffuz eder,
 /// bekleme süresinde kullanıcı tahmininin doğruluğunu sınar.
-class ChallengePage extends StatefulWidget {
+class ChallengePage extends ConsumerStatefulWidget {
   const ChallengePage({super.key});
 
   @override
-  State<ChallengePage> createState() => _ChallengePageState();
+  ConsumerState<ChallengePage> createState() => _ChallengePageState();
 }
 
-class _ChallengePageState extends State<ChallengePage>
+class _ChallengePageState extends ConsumerState<ChallengePage>
     with VoiceMixin, SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -53,36 +55,55 @@ class _ChallengePageState extends State<ChallengePage>
     return Scaffold(
       appBar: AppBar(
         title: const Text(title),
-
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          onPressed: () {
+            ref.read(mainPageModelProvider).changePage(MainPageType.home);
+          },
+        ),
         actions: const [VoiceSliderControlWidget()],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              textAlign: TextAlign.center,
-              _controller.isForwardOrCompleted ? '' : cachedWord,
-              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                shadows: [
-                  const Shadow(
-                    blurRadius: 16,
-                    color: Colors.black26,
-                    offset: Offset(5, 5),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 120,
+                    alignment: Alignment.center,
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      _controller.isForwardOrCompleted ? '' : cachedWord,
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(24),
+                      backgroundColor: Colors.deepPurple,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: nextEventButton,
+                    child: AnimatedIcon(
+                      icon: AnimatedIcons.play_pause,
+                      progress: _controller,
+                      size: 64,
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: nextEventButton,
-              child: AnimatedIcon(
-                icon: AnimatedIcons.play_pause,
-                progress: _controller,
-                size: 100,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

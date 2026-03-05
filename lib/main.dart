@@ -8,14 +8,13 @@ import 'package:spelling_bee/core/route/app_router_delegate.dart';
 import 'package:spelling_bee/core/route/main_page_model.dart';
 import 'package:spelling_bee/core/widgets/main_menu_elevated_button.dart';
 
-
 void main() {
   usePathUrlStrategy();
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,18 +27,42 @@ class MyApp extends ConsumerWidget {
       routerDelegate: appRouterDelegate,
       routeInformationParser: appRouteInformationParser,
       theme: ThemeData(
-        colorSchemeSeed: Colors.indigo,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          primary: Colors.deepPurple,
+          secondary: Colors.tealAccent,
+          background: Colors.grey.shade50,
+        ),
+        useMaterial3: true,
         appBarTheme: const AppBarTheme(
           titleTextStyle: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
             color: Colors.white,
+            letterSpacing: 1.2,
           ),
           centerTitle: true,
-          backgroundColor: Colors.indigo,
-          elevation: 5,
+          backgroundColor: Colors.deepPurple,
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+          ),
+        ),
+        cardTheme: CardThemeData(
+          elevation: 4,
+          shadowColor: Colors.deepPurple.withOpacity(0.2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            elevation: 2,
           ),
         ),
       ),
@@ -48,7 +71,7 @@ class MyApp extends ConsumerWidget {
 }
 
 class MainPage extends ConsumerWidget {
-  MainPage({required this.title, super.key});
+  const MainPage({required this.title, super.key});
 
   final String title;
 

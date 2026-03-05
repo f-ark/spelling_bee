@@ -32,8 +32,8 @@ class AppRouterDelegate extends RouterDelegate<MainPageType>
           key: ValueKey('learning'),
           child: LearningPage(),
         ),
-        _ =>  MaterialPage(
-          key: const ValueKey('home'),
+        _ =>  const MaterialPage(
+          key: ValueKey('home'),
           child: MainPage(title: AppConstants.appName),
         ),
       },

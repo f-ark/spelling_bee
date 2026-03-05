@@ -9,9 +9,9 @@ ChangeNotifierProvider<MainPageModel>((ref) {
 });
 
 class MainPageModel extends ChangeNotifier {
-  MainPageType _page;
 
   MainPageModel(this._page);
+  MainPageType _page;
 
   MainPageType get page => _page;
 

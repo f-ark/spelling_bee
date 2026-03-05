@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spelling_bee/core/services/shared_service.dart';
+import 'package:spelling_bee/core/route/main_page_model.dart';
 import 'package:spelling_bee/core/costants/word_list.dart';
+import 'package:spelling_bee/core/services/shared_service.dart';
 import 'package:spelling_bee/core/widgets/voice_mixin.dart';
 import 'package:spelling_bee/core/widgets/voice_slider_control_widget.dart';
 
 /// Local cache desteği ile kelime listesi ve telafuzlarını barındıran sayfa
-class LearningPage extends StatefulWidget {
+class LearningPage extends ConsumerStatefulWidget {
   const LearningPage({super.key});
 
   @override
-  State<LearningPage> createState() => _LearningPageState();
+  ConsumerState<LearningPage> createState() => _LearningPageState();
 }
 
-class _LearningPageState extends State<LearningPage> with VoiceMixin {
+class _LearningPageState extends ConsumerState<LearningPage> with VoiceMixin {
   @override
   Widget build(BuildContext context) {
     const title = 'Öğren';
     return Scaffold(
       appBar: AppBar(
         title: const Text(title),
-
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          onPressed: () {
+            ref.read(mainPageModelProvider).changePage(MainPageType.home);
+          },
+        ),
         actions: const [VoiceSliderControlWidget()],
       ),
       body: Center(

@@ -23,9 +23,9 @@ class AppRouteInformationParser extends RouteInformationParser<MainPageType> {
   @override
   RouteInformation? restoreRouteInformation(MainPageType configuration) {
     return switch (configuration) {
-      MainPageType.challenge => RouteInformation(uri: Uri(path: "/challenge")),
-      MainPageType.learn => RouteInformation(uri: Uri(path: "/learn")),
-      _ => RouteInformation(uri: Uri(path: "/")),
+      MainPageType.challenge => RouteInformation(uri: Uri(path: '/challenge')),
+      MainPageType.learn => RouteInformation(uri: Uri(path: '/learn')),
+      _ => RouteInformation(uri: Uri(path: '/')),
 
     };
   }
